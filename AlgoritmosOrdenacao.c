@@ -159,7 +159,22 @@ int *radix_sort(int vet[], int tam) {
     // achar maior valor
     int max = achar_maior(vet, tam);
 
-    // fazer couting sort para cada um dos digitos dos números
+    // criar vetor auxiliar
+    int *resultado = malloc(tam * sizeof(int));
+    copiar_vet(resultado, vet, tam);
+
+    // fazer counting sort para cada um dos digitos dos valores do vetor
+    for (int exp = 1; max / exp > 0; exp *= 10) {
+        // int *aux = malloc(tam * sizeof(int));
+        for (int i = 0; i < tam; i++)
+            resultado[i] = (resultado[i] / exp) % 10;
+
+        int *resultado = counting_sort(resultado, tam);
+
+        // free(aux);
+    }
+
+    return resultado;
 }
 
 int main() {
@@ -198,6 +213,15 @@ int main() {
     mostra_vetor(comb_sort(vet2, tam), tam);
     printf("Vetor 3 CombSort: ");
     mostra_vetor(comb_sort(vet3, tam), tam);
+    printf("\n");
+
+    // Radix Sort
+    printf("Vetor 1 Radix Sort: ");
+    mostra_vetor(radix_sort(vet1, tam), tam);
+    printf("Vetor 2 Radix Sort: ");
+    mostra_vetor(radix_sort(vet2, tam), tam);
+    printf("Vetor 3 Radix Sort: ");
+    mostra_vetor(radix_sort(vet3, tam), tam);
 
 
 
