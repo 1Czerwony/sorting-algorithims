@@ -245,7 +245,7 @@ int *radix_sort(int vet[], int tam) {
 
     // fazer counting sort para cada um dos digitos dos valores do vetor
     for (int exp = 1; max / exp > 0; exp *= 10) {
-        int count_vet[10] = {0,0,0,0,0,0,0,0,0,0};
+        int count_vet[10] = {0};
 
         for (int i = 0; i < tam; i++) 
             count_vet[(resultado[i] / exp) % 10]++;
@@ -259,7 +259,7 @@ int *radix_sort(int vet[], int tam) {
             count_vet[(resultado[i] / exp) % 10]--;
         }
 
-        copiar_vet(resultado, aux, tam);
+        copiar_vet(vet, aux, tam);
     }
 
     return resultado;
