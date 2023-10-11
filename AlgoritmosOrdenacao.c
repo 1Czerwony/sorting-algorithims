@@ -241,21 +241,22 @@ int *radix_sort(int vet[], int tam) {
 
     // alocar memoria para o vetor de resultado
     int *resultado = malloc(tam * sizeof(int));
+    copiar_vet(resultado, vet, tam);
 
     // fazer counting sort para cada um dos digitos dos valores do vetor
     for (int exp = 1; max / exp > 0; exp *= 10) {
         int count_vet[10] = {0,0,0,0,0,0,0,0,0,0};
 
         for (int i = 0; i < tam; i++) 
-            count_vet[(vet[i] / exp) % 10]++;
+            count_vet[(resultado[i] / exp) % 10]++;
 
-        for (int i = 1; i <= 10; i++)
+        for (int i = 1; i < tam; i++)
             count_vet[i] += count_vet[i-1];
 
         int aux[tam];
         for (int i = tam - 1; i >= 0; i--) {
-            aux[count_vet[(vet[i] / exp) % 10] - 1] = vet[i];
-            count_vet[(vet[i] / exp) % 10]--;
+            aux[count_vet[(resultado[i] / exp) % 10] - 1] = resultado[i];
+            count_vet[(resultado[i] / exp) % 10]--;
         }
 
         copiar_vet(resultado, aux, tam);
