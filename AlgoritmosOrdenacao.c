@@ -41,7 +41,7 @@ FunctionCallback algoritmos[] = {
 
 int main() {
     
-    int tam = 10; // tamanho dos vetores
+    int tam = 20; // tamanho dos vetores
 
     int vet1[tam]; // vetor crescente
     int vet2[tam]; // vetor decrescente
@@ -250,7 +250,7 @@ int *radix_sort(int vet[], int tam) {
         for (int i = 0; i < tam; i++) 
             count_vet[(resultado[i] / exp) % 10]++;
 
-        for (int i = 1; i < tam; i++)
+        for (int i = 1; i < 10; i++)
             count_vet[i] += count_vet[i-1];
 
         int aux[tam];
