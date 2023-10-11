@@ -259,7 +259,7 @@ int *radix_sort(int vet[], int tam) {
             count_vet[(resultado[i] / exp) % 10]--;
         }
 
-        copiar_vet(vet, aux, tam);
+        copiar_vet(resultado, aux, tam);
     }
 
     return resultado;
