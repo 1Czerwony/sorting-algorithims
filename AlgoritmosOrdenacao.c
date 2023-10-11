@@ -10,7 +10,7 @@ void copiar_vet(int vet1[], int vet2[], int tam);
 
 void trocar(int *i, int *j);
 
-int achar_maior(int vet[], int size);
+int achar_maior(int vet[], int tam);
 
 int *gravity_sort(int vet[], int tam);
 
@@ -41,7 +41,7 @@ FunctionCallback algoritmos[] = {
 
 int main() {
     
-    int tam = 5; // tamanho dos vetores
+    int tam = 10; // tamanho dos vetores
 
     int vet1[tam]; // vetor crescente
     int vet2[tam]; // vetor decrescente
@@ -84,7 +84,7 @@ int main() {
 
 void mostra_vetor(int vet[], int tam) {
     for (int i = 0; i < tam; i++) {
-        printf("%d ", vet[i]);
+        printf("%d\t", vet[i]);
     }
     printf("\n");
 }
@@ -127,9 +127,9 @@ void trocar(int *i, int *j) {
     *j = aux;
 }
 
-int achar_maior(int vet[], int size) {
+int achar_maior(int vet[], int tam) {
     int max = vet[0];
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < tam; i++) {
         if (vet[i] > max) {
             max = vet[i];
         }
