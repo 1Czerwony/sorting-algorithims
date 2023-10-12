@@ -10,7 +10,7 @@ void copiar_vet(int vet1[], int vet2[], int tam);
 
 void trocar(int *i, int *j);
 
-int achar_maior(int vet[], int tam);
+int achar_maior(int vet[], int tam, int *indice_maior);
 
 int *gravity_sort(int vet[], int tam);
 
@@ -22,12 +22,15 @@ int *radix_sort(int vet[], int tam);
 
 int *cocktail_sort(int vet[], int tam);
 
+int *pancake_sort(int vet[], int tam);
+
 enum algoritmos {
     GRAVITY,
     COUNTING,
     COMB,
     RADIX,
-    COCKTAIL
+    COCKTAIL,
+    PANCAKE
 };
 
 typedef int* (*FunctionCallback)(int*, int);
@@ -36,7 +39,8 @@ FunctionCallback algoritmos[] = {
     &counting_sort, 
     &comb_sort, 
     &radix_sort, 
-    &cocktail_sort
+    &cocktail_sort,
+    &pancake_sort
 };
 
 int main() {
@@ -51,7 +55,7 @@ int main() {
     preencher_vetores(vet1, vet2, vet3, tam);
 
     // testar algoritmos
-    for (int i = 0; i < 5; i++){
+    for (int i = 0; i < 6; i++){
         switch (i) {
         case GRAVITY:
             printf("GravitySort: \n");
@@ -72,7 +76,12 @@ int main() {
         case COCKTAIL:
             printf("CocktailSort: \n");
             break;  
+
+        case PANCAKE:
+            printf("PancakeSort: \n");
+            break;
         }
+
         mostra_vetor(algoritmos[i](vet1, tam), tam);
         mostra_vetor(algoritmos[i](vet2, tam), tam);
         mostra_vetor(algoritmos[i](vet3, tam), tam);
@@ -127,20 +136,34 @@ void trocar(int *i, int *j) {
     *j = aux;
 }
 
-int achar_maior(int vet[], int tam) {
+int achar_maior(int vet[], int tam, int* indice_maior){
+    *indice_maior = 0;
     int max = vet[0];
-    for (int i = 0; i < tam; i++) {
-        if (vet[i] > max) {
+    for(int i=0; i<tam; i++){
+        if(vet[i] > max){
             max = vet[i];
+            *indice_maior = i;
         }
     }
     return max;
 }
 
+void flip(int vet[], int iMax) {
+    int temp, start = 0;
+    while (start < iMax) {
+        temp = vet[start];
+        vet[start] = vet[iMax];
+        vet[iMax] = temp;
+        start++;
+        iMax--;
+    }
+}
+
 int *gravity_sort(int vet[], int tam) {
 
     // achar maior valor
-    int max = achar_maior(vet, tam);
+    int indice_maior;
+    int max = achar_maior(vet, tam, &indice_maior);
 
     // alocar memória
     int aux[tam][max];
@@ -172,7 +195,8 @@ int *gravity_sort(int vet[], int tam) {
 int *counting_sort(int vet[], int tam) {
     
     // achar o maior valor
-    int max = achar_maior(vet, tam);
+    int *indice_maior = NULL;
+    int max = achar_maior(vet, tam, indice_maior);
 
     // iniciar o vetor de count com 0
     int *count_vet = calloc(max + 1, sizeof(int));
@@ -237,7 +261,8 @@ int *comb_sort(int vet[], int tam) {
 int *radix_sort(int vet[], int tam) {
     
     // achar maior valor
-    int max = achar_maior(vet, tam);
+    int *indice_maior = NULL;
+    int max = achar_maior(vet, tam, indice_maior);
 
     // alocar memoria para o vetor de resultado
     int *resultado = malloc(tam * sizeof(int));
@@ -309,4 +334,31 @@ int *cocktail_sort(int vet[], int tam) {
     }
 
     return resultado; 
+}
+
+int *pancake_sort(int vet[], int tam) {
+    int *resultado = malloc(tam * sizeof(int));
+
+    // Copiar os elementos de 'vet' para 'resultado' para não modificar o array original
+    for (int i = 0; i < tam; i++) {
+        resultado[i] = vet[i];
+    }
+
+    // Começa do tamanho completo e reduz um por um
+    for (int tamAtual = tam; tamAtual > 1; --tamAtual) {
+        // Acha o índice do máximo elemento em vet[0..curr_size-1]
+        int iMax;
+        achar_maior(resultado, tamAtual, &iMax);
+        
+        // Move o máximo elemento para o final do array atual se não estiver lá
+        if (iMax + 1 != tamAtual) {
+            // Primeiro move o máximo número para o início se não estiver já lá
+            flip(resultado, iMax);
+            
+            // Agora move o máximo número para o final
+            flip(resultado, tamAtual-1);
+        }
+    }
+
+    return resultado;
 }
