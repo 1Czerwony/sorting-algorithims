@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <assert.h>
 
 void mostra_vetor(int vet[], int tam);
 
@@ -9,6 +10,10 @@ void preencher_vetores(int vet1[], int vet2[], int vet3[], int tam);
 void copiar_vet(int vet1[], int vet2[], int tam);
 
 void trocar(int *i, int *j);
+
+void flip(int vet[], int iMax);
+
+int verifica_vetor(int vet[], int tam);
 
 int achar_maior(int vet[], int tam, int *indice_maior);
 
@@ -45,7 +50,8 @@ FunctionCallback algoritmos[] = {
 
 int main() {
     
-    int tam = 20; // tamanho dos vetores
+    int tam = 100000; // tamanho dos vetores
+    printf("Tamanho dos vetores: %d\n", tam);
 
     int vet1[tam]; // vetor crescente
     int vet2[tam]; // vetor decrescente
@@ -54,8 +60,9 @@ int main() {
     // gerar vetores
     preencher_vetores(vet1, vet2, vet3, tam);
 
+
     // testar algoritmos
-    for (int i = 0; i < 6; i++){
+    for (int i = 1; i < 6; i++){
         switch (i) {
         case GRAVITY:
             printf("GravitySort: \n");
@@ -81,11 +88,35 @@ int main() {
             printf("PancakeSort: \n");
             break;
         }
+        printf("   Calculando..\n");
 
-        mostra_vetor(algoritmos[i](vet1, tam), tam);
-        mostra_vetor(algoritmos[i](vet2, tam), tam);
-        mostra_vetor(algoritmos[i](vet3, tam), tam);
+        clock_t start, end;
+        double cpu_time_used;
+        
+        start = clock();
+        int *vet_cresc = algoritmos[i](vet1, tam);
+        end = clock();
+        printf("   Tempo de execução para vetor crescente: %.3f s\n", ((double) (end - start)) / CLOCKS_PER_SEC);
+
+        start = clock();
+        int *vet_decresc = algoritmos[i](vet2, tam);
+        end = clock();
+        printf("   Tempo de execução para vetor decrescente: %.3f s\n", ((double) (end - start)) / CLOCKS_PER_SEC);
+
+        start = clock();
+        int *vet_aleat = algoritmos[i](vet3, tam);
+        end = clock();
+        printf("   Tempo de execução para vetor aleatório: %.3f s\n", ((double) (end - start)) / CLOCKS_PER_SEC);
+
+        assert(verifica_vetor(vet_cresc, tam));
+        assert(verifica_vetor(vet_decresc, tam));
+        assert(verifica_vetor(vet_aleat, tam));
+        printf("   OK\n");
         printf("\n");
+
+        free(vet_cresc);
+        free(vet_decresc);
+        free(vet_aleat);
     }
 
     return 0;
@@ -100,29 +131,29 @@ void mostra_vetor(int vet[], int tam) {
 
 void preencher_vetores(int vet1[], int vet2[], int vet3[], int tam) {
     srand(time(NULL));
-    int x = rand() % 100;
+    int x = rand() % tam;
 
-    printf("\nVetor 1:");
+    // printf("\nVetor 1:");
     for (int i = 0; i < tam; i++){
         vet1[i] = x;
         x++;
-        printf(" %d", vet1[i]);
+        // printf(" %d", vet1[i]);
 
     }
 
-    printf("\nVetor 2:");
+    // printf("\nVetor 2:");
     for (int i = 0; i < tam; i++){
         vet2[i] = x;
         x--;
-        printf(" %d", vet2[i]);
+        // printf(" %d", vet2[i]);
     }
 
-    printf("\nVetor 3:");
+    // printf("\nVetor 3:");
     for (int i = 0; i < tam; i++) {
-        vet3[i] = rand() % 100;
-        printf(" %d", vet3[i]);
+        vet3[i] = rand() % tam;
+        // printf(" %d", vet3[i]);
     }
-    printf("\n\n");
+    // printf("\n\n");
 }
 
 void copiar_vet(int vet1[], int vet2[], int tam) {
@@ -136,18 +167,6 @@ void trocar(int *i, int *j) {
     *j = aux;
 }
 
-int achar_maior(int vet[], int tam, int* indice_maior){
-    *indice_maior = 0;
-    int max = vet[0];
-    for(int i=0; i<tam; i++){
-        if(vet[i] > max){
-            max = vet[i];
-            *indice_maior = i;
-        }
-    }
-    return max;
-}
-
 void flip(int vet[], int iMax) {
     int temp, start = 0;
     while (start < iMax) {
@@ -159,17 +178,39 @@ void flip(int vet[], int iMax) {
     }
 }
 
+int verifica_vetor(int vet[], int tam) {
+    for (int i = 0; i < tam - 1; i++) {
+        if (vet[i] > vet[i + 1] || vet[i] > tam + tam) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int achar_maior(int vet[], int tam, int* indice_maior){
+    if (indice_maior != NULL)
+        *indice_maior = 0;
+    int max = vet[0];
+    for(int i=0; i<tam; i++){
+        if(vet[i] > max){
+            max = vet[i];
+            if (indice_maior != NULL)
+                *indice_maior = i;
+        }
+    }
+    return max;
+}
+
 int *gravity_sort(int vet[], int tam) {
 
     // achar maior valor
-    int indice_maior;
-    int max = achar_maior(vet, tam, &indice_maior);
+    int max = achar_maior(vet, tam, NULL);
+    // printf("Achou maior: %d\n");
 
     // alocar memória
-    int aux[tam][max];
+    int* aux[tam];
     for (int i = 0; i < tam; i++)
-        for (int j = 0; j < max; j++)
-            aux[i][j] = 0;
+        aux[i] = (int*)calloc(max, sizeof(int));
 
     // marcar beads/bolinhas
     for (int i = 0; i < tam; i++) 
@@ -177,7 +218,7 @@ int *gravity_sort(int vet[], int tam) {
             aux[i][j] = 1;
     
     // mover bolinhas para baixo
-    int *resultado = malloc(tam * sizeof(int));
+    int *resultado = calloc(tam, sizeof(int));
     for (int j = 0; j < max; j++) {
         int soma = 0;
         for (int i = 0; i < tam; i++) {
@@ -188,6 +229,7 @@ int *gravity_sort(int vet[], int tam) {
         for (int i = tam - 1; i >= tam - soma; i--)
             resultado[i] = j+1;
     }
+    free(aux);
 
     return resultado;
 }
@@ -195,8 +237,7 @@ int *gravity_sort(int vet[], int tam) {
 int *counting_sort(int vet[], int tam) {
     
     // achar o maior valor
-    int *indice_maior = NULL;
-    int max = achar_maior(vet, tam, indice_maior);
+    int max = achar_maior(vet, tam, NULL);
 
     // iniciar o vetor de count com 0
     int *count_vet = calloc(max + 1, sizeof(int));
@@ -261,8 +302,7 @@ int *comb_sort(int vet[], int tam) {
 int *radix_sort(int vet[], int tam) {
     
     // achar maior valor
-    int *indice_maior = NULL;
-    int max = achar_maior(vet, tam, indice_maior);
+    int max = achar_maior(vet, tam, NULL);
 
     // alocar memoria para o vetor de resultado
     int *resultado = malloc(tam * sizeof(int));
