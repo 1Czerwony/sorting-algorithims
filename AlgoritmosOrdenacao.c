@@ -3,7 +3,7 @@
 #include <time.h>
 #include <assert.h>
 
-#define TAM 100000
+#define TAM 100000 // tamanho dos vetores
 
 static int vet1[TAM]; // vetor crescente
 static int vet2[TAM]; // vetor decrescente
