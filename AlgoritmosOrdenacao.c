@@ -3,7 +3,7 @@
 #include <time.h>
 #include <assert.h>
 
-#define TAM 100000 // tamanho dos vetores
+#define TAM 20000 // tamanho dos vetores
 
 static int vet1[TAM]; // vetor crescente
 static int vet2[TAM]; // vetor decrescente
@@ -338,9 +338,11 @@ int *comb_sort(int vet[], int tam) {
     // iniciliza trocado como verdadeiro
     int trocado = 1;
 
-    // continuar rodando enquanto gap >= 1 e a ultima iteração causou uma troca
+    // copiar os elementos de 'vet' para 'resultado' para não modificar o array original
     int *resultado = malloc(tam * sizeof(int));
     copiar_vet(resultado, vet, tam);
+
+    // continuar rodando enquanto gap >= 1 e a ultima iteração causou uma troca
     while (gap != 1 || trocado == 1) {
 
         // calcular próximo gap
@@ -373,7 +375,7 @@ int *radix_sort(int vet[], int tam) {
     // achar maior valor
     int max = achar_maior(vet, tam, NULL);
 
-    // alocar memoria para o vetor de resultado
+    // copiar os elementos de 'vet' para 'resultado' para não modificar o array original
     int *resultado = malloc(tam * sizeof(int));
     copiar_vet(resultado, vet, tam);
 
@@ -404,8 +406,10 @@ int *cocktail_sort(int vet[], int tam) {
     int inicio = 0;
     int final = tam - 1;
 
+    // copiar os elementos de 'vet' para 'resultado' para não modificar o array original
     int *resultado = malloc(tam * sizeof(int));
     copiar_vet(resultado, vet, tam);
+
     while (trocado){
         
         // resetar trocado
@@ -446,12 +450,10 @@ int *cocktail_sort(int vet[], int tam) {
 }
 
 int *pancake_sort(int vet[], int tam) {
-    int *resultado = malloc(tam * sizeof(int));
 
-    // Copiar os elementos de 'vet' para 'resultado' para não modificar o array original
-    for (int i = 0; i < tam; i++) {
-        resultado[i] = vet[i];
-    }
+    // copiar os elementos de 'vet' para 'resultado' para não modificar o array original
+    int *resultado = malloc(tam * sizeof(int));
+    copiar_vet(resultado, vet, tam);
 
     // Começa do tamanho completo e reduz um por um
     for (int tamAtual = tam; tamAtual > 1; --tamAtual) {
@@ -481,7 +483,7 @@ int *bingo_sort(int vet[], int tam) {
     int maior_elem = prox_bingo;
     int pos_prox_elem = 0;
 
-    // alocar memória para o vetor de resultado
+    // copiar os elementos de 'vet' para 'resultado' para não modificar o array original
     int *resultado = malloc(tam * sizeof(int));
     copiar_vet(resultado, vet, tam);
 
@@ -510,9 +512,11 @@ int *bingo_sort(int vet[], int tam) {
 int *gnome_sort(int vet[], int tam) {
     int indice = 0;
 
+    // copiar os elementos de 'vet' para 'resultado' para não modificar o array original
     int *resultado = malloc(tam * sizeof(int));
     copiar_vet(resultado, vet, tam);
 
+    // verifica o indice anterior e o atual e os troca caso necessario
     while (indice < tam) {
         if (indice == 0)
             indice++;
